@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./index.css";
 
-export default function CreateSurvey({ questions, setQuestions }) {
+export default function CreateSurvey({type, questions, setQuestions }) {
   const [questionType, setQuestionType] = useState(0);
   const [questionIs, setQuestionIs] = useState("");
   const [values, setValues] = useState([{ value: "" }]);
@@ -17,6 +17,59 @@ export default function CreateSurvey({ questions, setQuestions }) {
     if (questionType == 1) {
       return handleMultipleQuestions();
     }
+    if(questionType==2)
+    {
+      return handleSingleSelect();
+    }
+  };
+
+  const handleSingleSelect=()=>{
+    return (
+      <div>
+        <div style={{ marginBottom: "20px" }}>
+          
+          <input
+           id="question"
+            type="text-box"
+            placeholder="Type Question"
+            className="question"
+            onChange={handleOnChange}
+          ></input>
+        </div>
+        {values.map((inputField, index) => {
+          return (
+            <div style={{ marginBottom: "3px" }} key={index}>
+              <input
+              id="answer"
+                type="text-box"
+                name="value"
+                placeholder="options"
+                className="question"
+                style={{ marginTop: "2px" }}
+                onInput={(e) => handleOnInput(index, e)}
+              ></input>
+              <button className="btn" onClick={handleAddMore}>
+                +
+              </button>
+              <button className="btn" onClick={() => handleDelete(index)}>
+                -
+              </button>
+            </div>
+          );
+        })}
+
+        <button className="button" onClick={handleAnotherQuestion}>
+          Another Question
+        </button>
+        <Link to="/createSurvey/publish">
+         
+          <button className="button" onClick={handlePublish}>
+            Publish
+          </button>
+        </Link>
+      </div>
+    );
+
   };
   const handleOnChange = (e) => {
     setQuestionIs(e.target.value);
@@ -39,6 +92,10 @@ export default function CreateSurvey({ questions, setQuestions }) {
   const handlePublish = () => {
     const v = [...questions];
     v[questions.length - 1].que = questionIs;
+    if(questionType==1)
+    v[questions.length - 1].type = "MultiSelect";
+    if(questionType==2)
+    v[questions.length - 1].type = "SingleSelect";
     v[questions.length - 1].values = values;
     setQuestions([...v, { que: "", values: [] }]);
     setQuestionIs("");
@@ -46,9 +103,17 @@ export default function CreateSurvey({ questions, setQuestions }) {
   };
 
   const handleAnotherQuestion = () => {
+    document.getElementById("question").value="";
+    document.getElementById("answer").value="";
+    
     const v = [...questions];
     v[questions.length - 1].que = questionIs;
+    
     v[questions.length - 1].values = values;
+    if(questionType==1)
+    v[questions.length - 1].type = "MultiSelect";
+    if(questionType==2)
+    v[questions.length - 1].type = "SingleSelect";
     setQuestions([...v, { que: "", values: [] }]);
     setQuestionIs("");
     setValues([{ value: "" }]);
@@ -59,8 +124,9 @@ export default function CreateSurvey({ questions, setQuestions }) {
     return (
       <div>
         <div style={{ marginBottom: "20px" }}>
-          {" "}
+          
           <input
+           id="question"
             type="text-box"
             placeholder="Type Question"
             className="question"
@@ -72,6 +138,7 @@ export default function CreateSurvey({ questions, setQuestions }) {
           return (
             <div style={{ marginBottom: "3px" }} key={index}>
               <input
+              id="answer"
                 type="text-box"
                 name="value"
                 placeholder="options"

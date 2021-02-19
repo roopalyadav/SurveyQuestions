@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './index.css';
 export default function Publish({questions}) {
     const showForm=(values)=>{
@@ -14,18 +15,21 @@ export default function Publish({questions}) {
     return (
         <div className="div">
             <h1>Survey Questions</h1>
-            { console.log(questions)}
+            
             {
                
                 questions.map((question, index)=>
                 {return(<div key={index}>
-                    <p > {question.que}</p>
+                    <p ><strong>{question.que} </strong>  <em>{question.type}</em></p>
                     <ul>
                    {
                    showForm(question.values)}
                    </ul>
                </div>) })
+           
+            
             }
+       <Link to="/createSurvey/publish/confirm"> <button className="button">Confirm</button> </Link>
         </div>
     )
 }
